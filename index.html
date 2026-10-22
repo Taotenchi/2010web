@@ -4117,7 +4117,7 @@
 
   // ===== THƯ BÍ MẬT =====
   // Thời điểm thư tự mở (giờ Việt Nam, UTC+7). Trước thời điểm này màn bí mật sẽ đếm ngược.
-  const SECRET_OPEN_AT = "2026-10-22T19:40:00+07:00";
+  const SECRET_OPEN_AT = "2026-10-22T20:00:00+07:00";
   const SECRET_LETTER_TITLE = "Hehe, em đồng ý chưa đấy? 😆";
   const SECRET_LETTER_BODY = "Dù thế nào anh vẫn chọn tiếp tục theo đuổi em thôi. Tụi mình gần như là người yêu rồi, nhưng anh vẫn thấy thiêu thiếu một chút, vì lời tỏ tình của anh chưa thật hoàn hảo, mà em cũng chưa chính thức gật đầu mà 🥺\n\nAnh muốn được đường hoàng gọi “anh - em” với em, và được nghe em tự hào giới thiệu: “đây là bạn trai của em”. Anh đòi danh phận rõ ràng đó nha! Với lại phải có một ngày thật cụ thể để mình làm anniversary nữa chứ, đúng không nè? 😝\n\nAnh yêu em nhiều lắm, Yến Như à. 💕";
   const SECRET_LETTER_SIGN = "";
@@ -6899,7 +6899,7 @@
     // Countdown uses a configurable ISO timestamp with the Vietnam UTC+7 offset.
     function secretUnlockTimestamp() {
       const value = Date.parse(SECRET_OPEN_AT);
-      return Number.isFinite(value) ? value : Date.parse('2026-10-22T19:40:00+07:00');
+      return Number.isFinite(value) ? value : Date.parse('2026-10-22T20:00:00+07:00');
     }
     function formatCountdown(ms) {
       const total = Math.max(0, Math.floor(ms / 1000));
