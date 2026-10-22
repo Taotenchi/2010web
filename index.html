@@ -2161,68 +2161,162 @@
 
   #kidcatSecretLetter {
     z-index: 45;
+    display: block;
+    padding: 0;
+    overflow: hidden;
+    background: #09070f;
+  }
+
+  .secret-letter-experience {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    isolation: isolate;
+    color: #fff5fb;
+    background: #100b18;
+  }
+
+  .secret-letter-background {
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(.48) saturate(.88);
+    transform: scale(1.035);
+    opacity: 0;
+    transition: opacity .9s ease;
+  }
+
+  .secret-letter-background.is-loaded { opacity: 1; }
+
+  .secret-letter-vignette {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(11, 6, 17, .24), rgba(11, 6, 17, .52)),
+      radial-gradient(ellipse at center, transparent 25%, rgba(0, 0, 0, .48) 100%);
+  }
+
+  .secret-frame-stage {
+    position: absolute;
+    inset: 0;
     display: grid;
     place-items: center;
-    padding: 18px;
-    background: rgba(6, 3, 12, .78);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity .24s ease, transform .24s ease;
   }
 
-  .secret-letter-paper {
-    width: min(520px, 94vw);
-    max-height: 84dvh;
-    overflow: auto;
-    padding: clamp(25px, 5vw, 42px);
+  .secret-frame-stage.is-changing {
+    opacity: 0;
+    transform: scale(.975);
+  }
+
+  .secret-frame-canvas {
+    position: relative;
+    width: min(86vw, calc(68dvh * var(--frame-ratio, .5625)));
+    aspect-ratio: var(--frame-ratio, .5625);
+    overflow: hidden;
+    isolation: isolate;
+    filter: drop-shadow(0 16px 38px rgba(0, 0, 0, .52));
+    transform: translateZ(0);
+  }
+
+
+  .secret-typed-letter {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
     box-sizing: border-box;
-    border-radius: 16px;
-    background: #fff5e8;
-    color: #593246;
-    box-shadow: 0 25px 95px rgba(0, 0, 0, .45), inset 0 0 0 8px rgba(255, 255, 255, .8);
-    text-align: left;
-    animation: letterLift .9s cubic-bezier(.2, .8, .2, 1) both;
+    padding: max(24px, env(safe-area-inset-top, 0px) + 15px) clamp(18px, 6vw, 88px) max(20px, env(safe-area-inset-bottom, 0px) + 16px);
+    overflow: auto;
+    background: linear-gradient(135deg, rgba(9, 5, 15, .48), rgba(22, 9, 27, .40));
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    animation: letterLift .8s cubic-bezier(.2, .8, .2, 1) both;
   }
 
-  .secret-letter-paper .letter-heart {
+  .secret-letter-content {
+    width: min(900px, 100%);
+    margin: auto;
+    padding: clamp(18px, 3.6vw, 44px) 0;
+    box-sizing: border-box;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, .65);
+  }
+
+  .secret-letter-content .letter-heart {
     display: block;
+    margin-bottom: 8px;
     text-align: center;
-    color: #d94672;
-    font-size: 27px;
+    color: #ffbadd;
+    font-size: 30px;
   }
 
-  .secret-letter-paper h2 {
-    margin: 12px 0 18px;
+  .secret-letter-content h2 {
+    margin: 0 0 clamp(18px, 3vh, 28px);
     text-align: center;
-    color: #bb3f6b;
-    font: italic 600 clamp(25px, 5vw, 34px)/1.2 var(--f-display);
+    color: #fff0f8;
+    font: italic 600 clamp(25px, 4.5vw, 38px)/1.28 var(--f-display);
+    text-wrap: balance;
   }
 
-  .secret-letter-paper p {
+  .secret-letter-content #secretLetterBody {
     white-space: pre-line;
     line-height: 1.85;
-    font-size: 15px;
+    font: 400 clamp(14px, 1.65vw, 18px)/1.85 var(--f-body);
     margin: 0 0 15px;
+    color: #fff8fc;
   }
 
-  .secret-letter-paper .secret-sign:empty {
-    display: none;
-  }
+  .secret-letter-content .secret-sign:empty { display: none; }
 
-  .secret-letter-paper .secret-sign {
+  .secret-letter-content .secret-sign {
     text-align: right;
-    color: #b33f6e;
+    color: #ffd0e8;
     font: 600 23px var(--f-script);
   }
 
-  .secret-letter-paper button {
+  .secret-letter-cursor {
+    display: inline-block;
+    margin-left: .08em;
+    color: #ffc2e2;
+    animation: introCursorBlink .7s steps(2, start) infinite;
+  }
+
+  .secret-letter-close {
     display: block;
-    margin: 20px auto 0;
-    border: 1px solid rgba(173, 75, 116, .35);
-    padding: 9px 22px;
+    margin: 22px auto 0;
+    border: 1px solid rgba(255, 202, 232, .58);
+    padding: 10px 23px;
     border-radius: 999px;
-    background: transparent;
-    color: #8a4563;
+    background: rgba(28, 12, 31, .48);
+    color: #fff2fa;
+    font: 500 13px var(--f-body);
     cursor: pointer;
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    transition: opacity .35s ease, transform .35s ease, background .2s ease;
+  }
+
+  .secret-letter-close.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .secret-letter-close:hover { background: rgba(108, 42, 87, .68); }
+
+  @media (max-width: 700px) {
+    .secret-frame-canvas { width: min(91vw, calc(64dvh * var(--frame-ratio, .5625))); }
+    .secret-letter-content #secretLetterBody { font-size: 14px; line-height: 1.78; }
   }
 
   #assetLoading {
@@ -4076,13 +4170,24 @@
 </section>
 
 <div id="kidcatSecretLetter" hidden role="dialog" aria-modal="true" aria-label="Nội dung lá thư bí mật">
-  <article class="secret-letter-paper">
-    <span class="letter-heart">♡</span>
-    <h2 id="secretLetterTitle"></h2>
-    <p id="secretLetterBody"></p>
-    <p class="secret-sign" id="secretLetterSign"></p>
-    <button id="closeSecretLetter" type="button">Khép thư lại</button>
-  </article>
+  <section class="secret-letter-experience" id="secretLetterExperience">
+    <img id="secretLetterBackground" class="secret-letter-background" alt="" aria-hidden="true" />
+    <div class="secret-letter-vignette" aria-hidden="true"></div>
+
+    <div class="secret-frame-stage" id="secretFrameStage" aria-label="Trình chiếu frame">
+      <div class="secret-frame-canvas" id="secretFrameCanvas"></div>
+    </div>
+
+    <article class="secret-typed-letter" id="secretTypedLetter" hidden>
+      <div class="secret-letter-content">
+        <span class="letter-heart" aria-hidden="true">♡</span>
+        <h2><span id="secretLetterTitle"></span><span id="secretLetterCursor" class="secret-letter-cursor" aria-hidden="true">▏</span></h2>
+        <p id="secretLetterBody"><span id="secretLetterBodyText"></span></p>
+        <p class="secret-sign" id="secretLetterSign"></p>
+        <button id="closeSecretLetter" type="button" class="secret-letter-close">Khép thư lại</button>
+      </div>
+    </article>
+  </section>
 </div>
 
 <!-- ================================================================
@@ -4116,7 +4221,6 @@
   const CHU_TREN_THIEP = "Gửi bạn ♡";
 
   // ===== THƯ BÍ MẬT =====
-  // Thời điểm thư tự mở (giờ Việt Nam, UTC+7). Trước thời điểm này màn bí mật sẽ đếm ngược.
   const SECRET_OPEN_AT = "2026-10-22T20:00:00+07:00";
   const SECRET_LETTER_TITLE = "Hehe, em đồng ý chưa đấy? 😆";
   const SECRET_LETTER_BODY = "Dù thế nào anh vẫn chọn tiếp tục theo đuổi em thôi. Tụi mình gần như là người yêu rồi, nhưng anh vẫn thấy thiêu thiếu một chút, vì lời tỏ tình của anh chưa thật hoàn hảo, mà em cũng chưa chính thức gật đầu mà 🥺\n\nAnh muốn được đường hoàng gọi “anh - em” với em, và được nghe em tự hào giới thiệu: “đây là bạn trai của em”. Anh đòi danh phận rõ ràng đó nha! Với lại phải có một ngày thật cụ thể để mình làm anniversary nữa chứ, đúng không nè? 😝\n\nAnh yêu em nhiều lắm, Yến Như à. 💕";
@@ -4143,7 +4247,9 @@
     diary: { asset: "music/3.mp3", loop: true },
     letter: { asset: "music/4.mp3", loop: true },
     bouquet: { asset: "music/5.mp3", loop: true },
-    finale: { asset: "music/6.mp3", loop: true }
+    finale: { asset: "music/6.mp3", loop: true },
+    // Nhạc riêng cho màn thước phim + thư cuối; phát một lượt để nhịp bài khớp với hiệu ứng.
+    secretLetter: { asset: "music/7.mp3", loop: false }
   };
   // Đúng theo sơ đồ trạng thái: hành tinh và hành trình 3D im lặng.
   const SCENE_MUSIC = {
@@ -6270,7 +6376,7 @@
       if (DEV_ASSET_CHECKS) console.warn(`[KidCat asset] Không đọc được assets/gifs/manifest.json; dùng tên mặc định 1.webm–4.webm.`, error);
     });
 
-    // Bảy artwork photobooth nguyên bản. 20 ảnh được đặt trong các ô trong suốt của từng thiết kế.
+    // Bảy artwork photobooth nguyên bản. 20 ảnh được đặt trong các ô trong suốt của từng thiết kế; cảnh thư cuối trình chiếu không kèm nhãn frame.
     // Vị trí khung ảnh căn theo cửa sổ trong artwork gốc; artwork không bị xoay hoặc làm méo.
     const PHOTOBOOTH_LAYOUTS = [
       {
@@ -6805,7 +6911,7 @@
         if (event.key === 'ArrowLeft') moveLightbox(-1);
         if (event.key === 'ArrowRight') moveLightbox(1);
       }
-      if (!kidcatSecretLetter.hidden && event.key === 'Escape') { kidcatSecretLetter.hidden = true; enableSecretReopen(); }
+      if (!kidcatSecretLetter.hidden && event.key === 'Escape') { closeSecretLetterExperience(); enableSecretReopen(); }
     });
 
     // Swipe left/right works inside the enlarged photo; vertical gestures remain native diary scrolling.
@@ -6906,6 +7012,214 @@
       const days = Math.floor(total / 86400), hours = Math.floor(total % 86400 / 3600), minutes = Math.floor(total % 3600 / 60), seconds = total % 60;
       return `${days} ngày ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     }
+    let secretSequenceTimer = 0;
+    let secretTypingTimer = 0;
+    let secretPresentationToken = 0;
+
+    function graphemes(text) {
+      if (typeof Intl !== 'undefined' && Intl.Segmenter) {
+        return Array.from(new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(text), part => part.segment);
+      }
+      return Array.from(text);
+    }
+
+    function makeSecretFramePreview(layout) {
+      const canvas = document.getElementById('secretFrameCanvas');
+      canvas.replaceChildren();
+      canvas.style.setProperty('--frame-ratio', String(layout.width / layout.height));
+      canvas.style.aspectRatio = `${layout.width} / ${layout.height}`;
+
+      const photoLayer = document.createElement('div');
+      photoLayer.className = 'diary-photo-layer';
+      layout.slots.forEach((slotSpec, localIndex) => {
+        const photoIndex = layout.start + localIndex;
+        const slot = document.createElement('div');
+        slot.className = 'template-photo-slot';
+        slot.style.setProperty('--slot-x', `${slotSpec.x}%`);
+        slot.style.setProperty('--slot-y', `${slotSpec.y}%`);
+        slot.style.setProperty('--slot-w', `${slotSpec.w}%`);
+        slot.style.setProperty('--slot-h', `${slotSpec.h}%`);
+        slot.style.setProperty('--slot-angle', `${slotSpec.a}deg`);
+        slot.style.cursor = 'default';
+
+        const img = document.createElement('img');
+        img.alt = '';
+        img.loading = 'eager';
+        img.decoding = 'async';
+        img.src = ANH[photoIndex] || `photos/${String(photoIndex + 1).padStart(2, '0')}.jpg`;
+        const fallback = document.createElement('span');
+        fallback.className = 'slot-fallback';
+        fallback.hidden = true;
+        img.addEventListener('error', () => { img.hidden = true; fallback.hidden = false; }, { once: true });
+        img.addEventListener('load', () => { fallback.hidden = true; }, { once: true });
+        slot.append(img, fallback);
+        photoLayer.appendChild(slot);
+      });
+
+      const artwork = document.createElement('img');
+      artwork.className = 'booth-frame-art';
+      artwork.alt = '';
+      artwork.draggable = false;
+      applyFrameCutout(artwork, layout);
+      canvas.append(photoLayer, artwork);
+    }
+
+    function cancelSecretLetterMotion() {
+      clearTimeout(secretSequenceTimer);
+      clearTimeout(secretTypingTimer);
+      secretSequenceTimer = 0;
+      secretTypingTimer = 0;
+      secretPresentationToken++;
+    }
+
+    function typeSecretLetterContent(token) {
+      const titleEl = document.getElementById('secretLetterTitle');
+      const bodyEl = document.getElementById('secretLetterBody');
+      const bodyTextEl = document.getElementById('secretLetterBodyText');
+      const signEl = document.getElementById('secretLetterSign');
+      const cursor = document.getElementById('secretLetterCursor');
+      const closeButton = document.getElementById('closeSecretLetter');
+      titleEl.textContent = '';
+      bodyEl.replaceChildren(bodyTextEl);
+      titleEl.parentElement.appendChild(cursor);
+      bodyTextEl.textContent = '';
+      signEl.textContent = '';
+      cursor.hidden = false;
+      closeButton.classList.remove('show');
+
+      const sections = [
+        { element: titleEl, text: SECRET_LETTER_TITLE, speed: 43, gap: 360 },
+        { element: bodyTextEl, text: SECRET_LETTER_BODY, speed: 23, gap: 160 },
+        ...(SECRET_LETTER_SIGN ? [{ element: signEl, text: SECRET_LETTER_SIGN, speed: 38, gap: 0 }] : [])
+      ];
+      let sectionIndex = 0;
+      let charIndex = 0;
+
+      const step = () => {
+        if (kidcatSecretLetter.hidden || token !== secretPresentationToken) return;
+        const section = sections[sectionIndex];
+        if (!section) {
+          cursor.hidden = true;
+          closeButton.classList.add('show');
+          return;
+        }
+        const chars = graphemes(section.text);
+        if (charIndex < chars.length) {
+          section.element.textContent += chars[charIndex];
+          const ch = chars[charIndex++];
+          const letterScroll = document.getElementById('secretTypedLetter');
+          if (letterScroll.scrollHeight > letterScroll.clientHeight) letterScroll.scrollTop = letterScroll.scrollHeight;
+          if (sectionIndex === 0 && charIndex === chars.length) {
+            bodyEl.appendChild(cursor);
+          } else if (sectionIndex >= 1 && cursor.parentElement !== bodyEl && sectionIndex === 1) {
+            bodyEl.appendChild(cursor);
+          }
+          const pause = ',.!?…😆🥺😝💕❤️♡'.includes(ch) ? 92 : (ch === '\n' ? 125 : section.speed);
+          secretTypingTimer = setTimeout(step, pause);
+          return;
+        }
+        sectionIndex++;
+        charIndex = 0;
+        if (sectionIndex >= sections.length) {
+          cursor.hidden = true;
+          closeButton.classList.add('show');
+          return;
+        }
+        secretTypingTimer = setTimeout(step, section.gap);
+      };
+      step();
+    }
+
+    function startSecretLetterPresentation({ animateFrames = true, typeText = true } = {}) {
+      cancelSecretLetterMotion();
+      const token = secretPresentationToken;
+      const background = document.getElementById('secretLetterBackground');
+      const frameStage = document.getElementById('secretFrameStage');
+      const typedLetter = document.getElementById('secretTypedLetter');
+      const closeButton = document.getElementById('closeSecretLetter');
+      const cursor = document.getElementById('secretLetterCursor');
+
+      const backgroundSrc = ANH[2] || 'photos/03.jpg';
+      if (background.dataset.secretSrc !== backgroundSrc) {
+        background.dataset.secretSrc = backgroundSrc;
+        background.classList.remove('is-loaded');
+        background.onload = () => background.classList.add('is-loaded');
+        background.onerror = () => {
+          background.classList.remove('is-loaded');
+          console.warn('[KidCat asset] Không tải được ảnh nền thư cuối:', backgroundSrc);
+        };
+        background.src = backgroundSrc;
+      } else if (background.complete && background.naturalWidth > 0) {
+        background.classList.add('is-loaded');
+      }
+
+      kidcatSecretLetter.hidden = false;
+      closeButton.classList.remove('show');
+      typedLetter.hidden = true;
+      frameStage.hidden = !animateFrames;
+      frameStage.classList.remove('is-changing');
+
+      if (animateFrames) {
+        // Bài 7.mp3 được đo ở khoảng 80 BPM (~748 ms/nhịp). Giữ mỗi frame 2 nhịp,
+        // chừa khoảng intro đầu bài ~1 giây, rồi đổi frame đúng vào nhịp kế tiếp.
+        // Tổng 7 frame (~11.5 giây) + hiệu ứng gõ thư được căn để đi gần trọn bài (~26.6 giây).
+        const beatMs = 60000 / 80.2;
+        const frameStepMs = beatMs * 2;
+        const firstFrameHoldMs = 1000 + frameStepMs;
+        const frameFadeMs = 230;
+        let frameIndex = 0;
+
+        // Bắt đầu nhạc cùng thời điểm frame đầu xuất hiện; track 6 sẽ được fade sang track 7.
+        setSceneMusic('secretLetter', { restart: true });
+
+        const showTypedLetter = () => {
+          if (kidcatSecretLetter.hidden || token !== secretPresentationToken) return;
+          frameStage.hidden = true;
+          typedLetter.hidden = false;
+          typedLetter.scrollTop = 0;
+          typeSecretLetterContent(token);
+        };
+
+        const nextFrame = () => {
+          if (kidcatSecretLetter.hidden || token !== secretPresentationToken) return;
+          if (frameIndex >= PHOTOBOOTH_LAYOUTS.length) {
+            // Frame cuối đã fade theo nhịp; chuyển nhẹ sang thư rồi bắt đầu gõ chữ.
+            secretSequenceTimer = setTimeout(showTypedLetter, 220);
+            return;
+          }
+          const layout = PHOTOBOOTH_LAYOUTS[frameIndex];
+          makeSecretFramePreview(layout);
+          frameStage.classList.remove('is-changing');
+          frameIndex++;
+
+          // Chuẩn bị fade trước nhịp 230 ms; frame tiếp theo xuất hiện chính vào nhịp mục tiêu.
+          const holdMs = frameIndex === 1 ? firstFrameHoldMs : frameStepMs;
+          secretSequenceTimer = setTimeout(() => {
+            if (kidcatSecretLetter.hidden || token !== secretPresentationToken) return;
+            frameStage.classList.add('is-changing');
+            secretSequenceTimer = setTimeout(nextFrame, frameFadeMs);
+          }, Math.max(0, holdMs - frameFadeMs));
+        };
+        nextFrame();
+        return;
+      }
+
+      frameStage.hidden = true;
+      typedLetter.hidden = false;
+      typedLetter.scrollTop = 0;
+      document.getElementById('secretLetterTitle').textContent = SECRET_LETTER_TITLE;
+      document.getElementById('secretLetterBodyText').textContent = SECRET_LETTER_BODY;
+      document.getElementById('secretLetterSign').textContent = SECRET_LETTER_SIGN;
+      cursor.hidden = true;
+      closeButton.classList.add('show');
+      if (typeText) typeSecretLetterContent(token);
+    }
+
+    function closeSecretLetterExperience() {
+      cancelSecretLetterMotion();
+      kidcatSecretLetter.hidden = true;
+    }
+
     function revealSecretLetterAutomatically() {
       if (secretLetterOpened) return;
       secretLetterOpened = true;
@@ -6915,10 +7229,7 @@
       document.getElementById('secretSub').textContent = 'Lá thư đang được mở ra…';
       setTimeout(() => {
         if (kidcatSecret.hidden) return;
-        document.getElementById('secretLetterTitle').textContent = SECRET_LETTER_TITLE;
-        document.getElementById('secretLetterBody').textContent = SECRET_LETTER_BODY;
-        document.getElementById('secretLetterSign').textContent = SECRET_LETTER_SIGN;
-        kidcatSecretLetter.hidden = false;
+        startSecretLetterPresentation({ animateFrames: true, typeText: true });
         // secretFinal already owns music/6.mp3; revealing its letter must not restart audio.
         startCelebration('letter', 6200);
       }, 1700);
@@ -6952,7 +7263,8 @@
     }
     function reopenSecretLetter() {
       if (!secretLetterOpened || !kidcatSecretLetter.hidden) return;
-      kidcatSecretLetter.hidden = false;
+      // Khi đọc lại, hiện ngay toàn bộ lá thư; không bắt người xem chạy lại bảy khung ảnh.
+      startSecretLetterPresentation({ animateFrames: false, typeText: false });
     }
     document.getElementById('secretCenter').addEventListener('click', () => {
       if (document.getElementById('secretCenter').classList.contains('can-reopen')) reopenSecretLetter();
@@ -6964,9 +7276,10 @@
       reopenSecretLetter();
     });
     document.getElementById('closeSecretLetter').addEventListener('click', () => {
-      kidcatSecretLetter.hidden = true;
+      closeSecretLetterExperience();
       enableSecretReopen();
-      // Keep the current final-secret track; never restart it just because the letter closed.
+      // Rời thước phim thì trở về nhạc nền của cảnh bí mật; nhạc 7.mp3 chỉ dành cho reveal.
+      setSceneMusic('finale', { restart: true });
       startCelebration('finale', 8500);
     });
 
@@ -6982,6 +7295,7 @@
       finalReveal.classList.remove('show'); finalReveal.hidden = true; finalReveal.setAttribute('aria-hidden', 'true');
       kidcatSecret.hidden = false; kidcatSecret.classList.remove('unlocked');
       secretLetterOpened = false;
+      cancelSecretLetterMotion();
       kidcatSecretLetter.hidden = true;
       disableSecretReopen();
       updateSecretCountdown();
@@ -7011,6 +7325,7 @@
       if (event) { event.preventDefault(); event.stopPropagation(); }
       const wasStaticBeforeRestart = STATIC_UI_STAGES.has(stageName);
       restartToken++;
+      cancelSecretLetterMotion();
       // [FIX #2] Giữ nguyên renderer + bó hoa đã tải (chỉ ẩn), không tạo lại/không tải lại.
       BouquetBackdrop.hide();
       lastFrameAt = 0;
